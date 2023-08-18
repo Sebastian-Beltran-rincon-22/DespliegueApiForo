@@ -1,4 +1,4 @@
-const {ROLE} = require('../models/Admin')
+const {ROLE} = require('../models/admin')
 const User = require('../models/user')
 
 

@@ -1,5 +1,5 @@
 const config = require ('../config')
-const Admin = require('../models/Admin')
+const Admin = require('../models/admin')
 const jwt = require('jsonwebtoken')
 const User = require('../models/user')
 
