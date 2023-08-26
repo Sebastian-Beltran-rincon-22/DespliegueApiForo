@@ -56,9 +56,8 @@ const controllerUser = {
     updateUser: async (req, res) => {
         try {
             const { id } = req.params
-            await User.findByIdAndUpdate({id},req.body).then(res =>{
-                console.log(res)
-            })
+            const updateData = req.body
+            await User.findByIdAndUpdate(id,updateData)
             res.status(200).json({ msg: 'update' })
         } catch (error) {
             return res.status(500).json({ msg: error })
