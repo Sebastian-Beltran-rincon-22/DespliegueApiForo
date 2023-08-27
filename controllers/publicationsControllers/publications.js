@@ -29,7 +29,7 @@ const controllerPublication = {
     getPublication: async (req, res) => {
         try {
             const publications = await Publication.find({})
-            res.json(publications)
+            res.json(publications.reverse())
         } catch (error) {
             return res.status(500).json({ msg: error.message })
         }
