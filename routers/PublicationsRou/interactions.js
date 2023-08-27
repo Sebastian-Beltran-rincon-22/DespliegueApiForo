@@ -4,10 +4,10 @@ const interacControllers = require('../../controllers/publicationsControllers/in
 
 const router = express.Router()
 
-router.post('/create',authJwt.verifyToken, interacControllers.create)
+router.post('/create', interacControllers.create)
 router.get('/', interacControllers.getInreract)
 router.get('/:id', interacControllers.getInteraById)
-router.patch('/update/:id',authJwt.verifyToken,interacControllers.updateInterac)
-router.delete('/delete/:id',authJwt.verifyToken,interacControllers.deleteInterac)
+router.patch('/update/:id',interacControllers.updateInterac)
+router.delete('/delete/:id',interacControllers.deleteInterac)
 
 module.exports = router
