@@ -61,7 +61,7 @@ const interacControllers = {
             const {reactions,comments,publicationId,shares} = req.body
 
             await Interactions.findByIdAndUpdate(id,{
-                publicationId: publicationId._id,
+                publicationId: publicationId,
                 reactions: reactions,
                 comments: comments,
                 shares: shares
