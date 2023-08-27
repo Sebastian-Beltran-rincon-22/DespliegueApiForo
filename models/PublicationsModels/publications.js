@@ -14,7 +14,7 @@ const PublicationSchema = new Schema({
     description: {
         type: String,
         required: true,
-        maxLength: 200
+        maxLength: 800
     },
     image: {
         type: String
