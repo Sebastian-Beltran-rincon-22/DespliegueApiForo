@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const ROLE = ["admin","user"] 
+const ROLE = ["admin","user"] //Roles existentes
 
 const adminSchema = new Schema({
 
