@@ -4,6 +4,7 @@ const User = require('../models/user')
 
 const verifySignup ={
 
+    //validación para no permitir usuarios duplicados
     checkDupletUserNameOrEmail :async (req,res,next) =>{
         try{
         const userFound = await User.findOne({userName: req.body.userName})
@@ -18,6 +19,7 @@ const verifySignup ={
     }
     },
 
+    //Validación de roles
     checkRoleExist: (req, res, next) => {
 
         if (!req.body.admin || req.body.admin.length === 0) {
