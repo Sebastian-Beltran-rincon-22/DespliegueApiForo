@@ -8,42 +8,38 @@ const interacControllers = {
     likeInteraction: async (req, res) => {
         try {
             const { id } = req.params;
-            const interaction = await Interactions.findById(id);
     
+            // Busca la interacción existente o crea una nueva si no existe
+            let interaction = await Interactions.findById(id);
             if (!interaction) {
-                return res.status(404).json({ error: 'Interacción no encontrada' });
+                interaction = new Interactions({ publication: id });
             }
     
             const userId = req.user.id; // Obtén el ID del usuario autenticado
-            const publicationId = interaction.publication;
     
-            // Obtén la publicación asociada al publicationId
-            const publication = await Publication.findById(publicationId);
-    
+            // Incrementa el contador de likes de la publicación asociada
+            const publication = await Publication.findById(id);
             if (!publication) {
                 return res.status(404).json({ error: 'Publicación no encontrada' });
             }
+            publication.likesCount += 1;
+            await publication.save();
     
             // Verifica si el usuario ya ha dado like a esta interacción
             if (interaction.reactions.includes(userId)) {
                 return res.status(400).json({ error: 'El usuario ya ha dado like a esta interacción' });
             }
     
-            // Incrementa el contador de likes de la publicación
-            publication.likesCount += 1;
-    
             // Agrega el ID del usuario a la lista de reacciones y guarda la interacción
             interaction.reactions.push(userId);
             await interaction.save();
-    
-            // Guarda la publicación actualizada
-            await publication.save();
     
             res.json({ msg: 'Like agregado correctamente' });
         } catch (error) {
             return res.status(500).json({ msg: 'Error al dar like a la interacción' });
         }
     },
+    
     
     
     unlikeInteraction: async (req, res) => {
