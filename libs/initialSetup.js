@@ -9,6 +9,7 @@ const rolAdmin ={
 
         if (count > 0 ) return
 
+        //creacion de los Roles
         const values = await Promise.all([
             new Admin({name: "user"}).save(),
             new Admin({name: "admin"}).save()
@@ -28,6 +29,7 @@ const rolAdmin ={
 
         const admin = await Admin.find({name: {$in:["admin"]}})
 
+        //Crear el primer Administrador
         const userRegis = await User.create({
             userName: config.ADMIN_USERNAME,
             email: config.ADMIN_EMAIL,
