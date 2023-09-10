@@ -5,22 +5,16 @@ const Schema = mongoose.Schema
 const interacSchema = new Schema({
 
     reactions: {
-        type: Boolean,
-        default: false
-    },
-    comments: {
-        type: String,
-        content: String,
-        date: Date
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User' //Referecia a modelo de Usuario
     },
     shares:{
         type: String
     },
     
     publication:{
-        ref: 'Publication',
+        ref: 'Publication', //Referecia a modelo de publicacion
         type: mongoose.Schema.Types.ObjectId
-
     }
 
 },{versionKey:false})
