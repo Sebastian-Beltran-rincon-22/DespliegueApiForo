@@ -64,7 +64,7 @@ const interacControllers = {
     
             res.json({ msg: 'Like quitado correctamente', likesCount: interaction.reactions.length });
         } catch (error) {
-            return res.status(500).json({ msg: 'Error al quitar like de la interacción' });
+            return res.status(500).json({ msg: error.message });
         }
     },
     
