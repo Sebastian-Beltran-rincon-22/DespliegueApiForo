@@ -6,10 +6,12 @@ const publication = require ('./routers/PublicationsRou/publications')
 const admin = require('./routers/auth')
 const interactions = require('./routers/PublicationsRou/interactions')
 const comments = require('./routers/PublicationsRou/comments')
-const createAdmin = require('./libs/initialSetup')
+const rolAdmin = require('./libs/initialSetup')
 
 const app = express()
-createAdmin()
+rolAdmin.createAdmin()
+rolAdmin.adminprint()
+
 
 app.use(cors({
     origin:"*",
