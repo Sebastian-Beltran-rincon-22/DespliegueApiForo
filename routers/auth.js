@@ -10,14 +10,14 @@ router.use((req, res, next) => {
         "x-access-token, Origin, Content-Type, Accept"
     );
     next();
-    });
+    }); // validaciones para token en la aplicacion 
 
 router.post('/signup',[verifySignup.checkDupletUserNameOrEmail,verifySignup.checkRoleExist],
-    userControllers.signup
-)
+    userControllers.signup 
+) // ruta registro con validaciones 
 
-router.post('/signin',userControllers.signin)
+router.post('/signin',userControllers.signin) // ruta inicio de sesión
 
-router.get('/',authJwt.verifyToken,userControllers.getsingup)
+router.get('/',authJwt.verifyToken,userControllers.getsingup) //buscar todos los usuarios
 
 module.exports = router
