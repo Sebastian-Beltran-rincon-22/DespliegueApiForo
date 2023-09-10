@@ -4,6 +4,7 @@ const {Admin} = require('../models/admin')
 
 const controllerUser = {
 
+        //creacion de usuarios a la que solo el administrador tiene acceso
         create: async (req, res) => {
         try {
             const {userName,userImg,email,password,admin} = req.body
@@ -14,10 +15,10 @@ const controllerUser = {
                 userImg,
                 email,
                 password,
-                admin: adminFound.map((admins) => admins._id)
+                admin: adminFound.map((admins) => admins._id)  // asigna por defecto el rol Usuario
             })
 
-            user.password = await User.encryptPassword(user.password)
+            user.password = await User.encryptPassword(user.password) // antes de guardar la contraseña la encripta
 
             const savedUser = await user.save()
 
@@ -33,7 +34,7 @@ const controllerUser = {
             return res.status(500).json({ msg: error })
         }
     },
-
+    //Buscar todos los usuarios existentes
     getUser: async (req, res) => {
         try {
             const users = await User.find({})
@@ -42,7 +43,7 @@ const controllerUser = {
             return res.status(500).json({ msg: error })
         }
     },
-
+    // buscar usuarios especificos
     getUserById: async (req, res) => {
         try {
             const { id } = req.params
