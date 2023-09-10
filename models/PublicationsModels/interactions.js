@@ -4,10 +4,10 @@ const Schema = mongoose.Schema
 
 const interacSchema = new Schema({
 
-    reactions: {
+    reactions: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User' //Referecia a modelo de Usuario
-    },
+    }],
     shares:{
         type: String
     },
