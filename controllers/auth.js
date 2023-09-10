@@ -3,7 +3,9 @@ const {Admin} = require('../models/admin')
 const jwt = require('jsonwebtoken')
 const User = require('../models/user')
 
-const userControllers ={   
+const userControllers ={
+    
+    //Controlador para la creacion de Usuarios & Administradores
     signup: async (req,res) =>{
         try{
         const {userName, email, password, admin} = req.body
@@ -32,7 +34,7 @@ const userControllers ={
         console.log(userRegis)
 
         const token = jwt.sign({id: savedUser._id}, config.SECRET,{
-            expiresIn: 86400 //cada dia 
+            expiresIn: 86400 //tiempo de que tarda en expirar el token (cada 24h) 
         })
         res.status(200).json({token})
     }catch(error){
@@ -40,16 +42,18 @@ const userControllers ={
     }
     },  
 
+    //Controlador para la el logueo de Usuarios & Administradores
     signin: async (req,res) =>{
         try{
-        const userFound =await User.findOne({email: req.body.email}).populate("admin")
+        const userFound =await User.findOne({email: req.body.email}).populate("admin") 
 
-        if (!userFound) return res.status(400).json({message: 'user not found '})
+        if (!userFound) return res.status(400).json({message: 'user not found '}) // Validaciones para autentificar el usuario
 
-        const mathPassword = await User.comparPassword(req.body.password, userFound.password)
+        const mathPassword = await User.comparPassword(req.body.password, userFound.password) // Valida si la contraseña ingresada es la correcta
 
         if (!mathPassword) return res.status(401).json({token: null, message: 'invalid password '})
         
+        //una vez autentificado loguea y genera un nuevo token
         const token = jwt.sign({id: userFound._id}, config.SECRET,{
             expiresIn: 86400
         })
