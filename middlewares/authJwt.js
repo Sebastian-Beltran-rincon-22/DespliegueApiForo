@@ -5,6 +5,7 @@ const {Admin} = require('../models/admin')
 
 const authJwt ={
     
+    //verificación del token
     verifyToken : async(req,res, next) =>{
     
     
@@ -26,6 +27,7 @@ const authJwt ={
     }
 },
 
+//verificación si es un administrador
 isAdmin : async (req,res, next) =>{
     try{
 
