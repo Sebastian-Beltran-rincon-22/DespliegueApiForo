@@ -8,13 +8,13 @@ const verifySignup = require('../middlewares/verifySignup')
 
 
 router.post('/create',[ authJwt.verifyToken,authJwt.isAdmin,verifySignup.checkRoleExist,verifySignup.checkDupletUserNameOrEmail
-],controllerUser.create)
+],controllerUser.create) // registro de usuarios que solo puede realizar admin
 
 
 router.get('/', controllerUser.getUser)
 router.get('/:id', controllerUser.getUserById)
 router.patch('/update/:id', controllerUser.updateUser)
 router.delete('/delete/:id',[ authJwt.verifyToken,authJwt.isAdmin,verifySignup.checkRoleExist
-], controllerUser.deleteUser)
+], controllerUser.deleteUser) // eliminar usuarios que solo puede realizar admin
 
 module.exports = router
