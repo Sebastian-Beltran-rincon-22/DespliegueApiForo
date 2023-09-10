@@ -1,5 +1,7 @@
 const Publication = require('../../models/PublicationsModels/publications');
 const User = require('../../models/user');
+const Interactions = require('../../models/PublicationsModels/interactions')
+
 
 const controllerPublication = {
     create: async (req, res) => {
@@ -14,12 +16,17 @@ const controllerPublication = {
                 return res.status(404).json({error: "could not find user"})
             }
 
-            await Publication.create({
+            const newPublication =  await Publication.create({
                 user: user._id,
                 date_create: date_create,
                 description: description,
                 image: image,
             });
+
+            await Interactions.create({
+                reactions:[],
+                publication: newPublication._id
+            })
             console.log('Publication created');
             res.json({ msg: 'created' });
         } catch (error) {
