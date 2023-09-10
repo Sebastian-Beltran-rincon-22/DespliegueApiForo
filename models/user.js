@@ -33,7 +33,7 @@ const userSchema = new Schema({
         required: true
     },
     admin:[{
-        ref: "Admin",
+        ref: "Admin", //Referecia a modelo de Admin
         type: mongoose.Schema.Types.ObjectId
     }]
     
