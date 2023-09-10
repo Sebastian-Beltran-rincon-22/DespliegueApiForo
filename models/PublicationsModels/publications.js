@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const PublicationSchema = new Schema({
     user: {
-        ref: 'User',
+        ref: 'User', //Referecia a modelo de Usuario
         type: Schema.Types.ObjectId
     },
     date_create: {
