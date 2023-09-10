@@ -1,87 +1,78 @@
 const Interactions = require('../../models/PublicationsModels/interactions')
 const Publication = require('../../models/PublicationsModels/publications')
-const interactions = require('../../models/PublicationsModels/interactions')
+const User = require('../../models/user')
 
 const interacControllers = {
 
-    create: async (req,res) =>{
-
-        try{
-        const {publicationId,reactions,comments,shares} = req.body
-
-        console.log("PublicationID:", publicationId)
-
-        const publication = await Publication.findById(publicationId) //Share Id Publications
-        if(!publication){
-            return res.status(404).json({error:'this action is not possible'}) //nou found
-        }
-
-        await Interactions.create({
-            publication: publication._id,
-            reactions: reactions,
-            comments: comments,
-            shares: shares
-        })
-        console.log('Interaction created');
-        const response = {
-            msg: 'New interaction created',
-            interactions: {
-                _id: interactions._id,
-                reactions: interactions.reactions,
-                comments: interactions.comments,
-                shares: interactions.shares
-            }
-        }
-        res.json({ response }); //
-        }catch(error){
-            return res.status(500).json({ msg: error.message })
-        }
-    },
-
-    getInreract: async(req,res) =>{
-        try{
-            const interactions = await Interactions.find({})
-            res.json(interactions)
-        }catch (error){
-            return res.status(500).json({ msg: error.message })
-        }
-    },
-    getInteraById: async (req, res) => {
+    // manejo de likes
+    likeInteraction: async (req, res) => {
         try {
-            const { id } = req.params
-            const interaction = await Interactions.findById(id)
-            res.json(interaction)
+            const { id } = req.params;
+            const interaction = await Interactions.findById(id);
+    
+            if (!interaction) {
+                return res.status(404).json({ error: 'Interacción no encontrada' });
+            }
+    
+            const userId = req.user.id; // Obtén el ID del usuario autenticado
+            const publicationId = interaction.publication;
+    
+            // Obtén la publicación asociada al publicationId
+            const publication = await Publication.findById(publicationId);
+    
+            if (!publication) {
+                return res.status(404).json({ error: 'Publicación no encontrada' });
+            }
+    
+            // Verifica si el usuario ya ha dado like a esta interacción
+            if (interaction.reactions.includes(userId)) {
+                return res.status(400).json({ error: 'El usuario ya ha dado like a esta interacción' });
+            }
+    
+            // Incrementa el contador de likes de la publicación
+            publication.likesCount += 1;
+    
+            // Agrega el ID del usuario a la lista de reacciones y guarda la interacción
+            interaction.reactions.push(userId);
+            await interaction.save();
+    
+            // Guarda la publicación actualizada
+            await publication.save();
+    
+            res.json({ msg: 'Like agregado correctamente' });
         } catch (error) {
-            return res.status(500).json({ msg: error.message })
+            return res.status(500).json({ msg: 'Error al dar like a la interacción' });
         }
     },
-    updateInterac: async (req,res) =>{
-        try{
-            const {id} = req.params
-            const {reactions,comments,publicationId,shares} = req.body
-
-            await Interactions.findByIdAndUpdate(id,{
-                publicationId: publicationId,
-                reactions: reactions,
-                comments: comments,
-                shares: shares
-            })
-            res.json({msg: 'Update'})
-            console.log(Interactions)
-
-        }catch(error){
-            return res.status(404).json({msg: error.message})
+    
+    
+    unlikeInteraction: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const interaction = await Interactions.findById(id);
+    
+            if (!interaction) {
+                return res.status(404).json({ error: 'Interacción no encontrada' });
+            }
+    
+            const userId = req.user.id; // Obtén el ID del usuario autenticado
+    
+            // Verifica si el usuario ha dado like a esta interacción
+            if (!interaction.reactions.includes(userId)) {
+                return res.status(400).json({ error: 'El usuario no ha dado like a esta interacción' });
+            }
+    
+            // Quita el ID del usuario de la lista de reacciones y guarda la interacción
+            interaction.reactions = interaction.reactions.filter(reactionId => reactionId !== userId);
+            await interaction.save();
+    
+            res.json({ msg: 'Like quitado correctamente', likesCount: interaction.reactions.length });
+        } catch (error) {
+            return res.status(500).json({ msg: 'Error al quitar like de la interacción' });
         }
     },
-    deleteInterac: async (req,res) =>{
-        try{
-            const {id} = req.params
-            await Interactions.findByIdAndDelete(id)
-            res.json({msg: 'Deleted'})
-        }catch (error){
-            return res.status(400).json({msg: error.message})
-        }
-    }
+    
+
 }
 
 module.exports = interacControllers
