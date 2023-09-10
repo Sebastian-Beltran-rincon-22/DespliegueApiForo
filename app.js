@@ -29,7 +29,11 @@ app.use(bodyParser.json())
 app.use('/poofo',user)
 app.use('/publictpoofo',publication)
 app.use('/admins',admin)
-app.use('/interactions',interactions)
+app.use('/interactions', (req, res, next) => {
+    console.log(`Solicitud a la ruta: ${req.method} ${req.url}`);
+    next();
+});
+
 app.use('/comments',comments)
 
 
