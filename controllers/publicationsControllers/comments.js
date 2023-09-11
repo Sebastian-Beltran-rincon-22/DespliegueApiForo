@@ -7,8 +7,23 @@ const commentController ={
     createComment: async (req, res) => {
         try {
             const { content, publicationId } = req.body;
-            const userId = req.user.id; // Obtén el ID del usuario autenticado
-    
+            let userId = null;
+
+            // Verifica si el usuario está autenticado y obtén su ID
+            if (req.user && req.user.id) {
+                userId = req.user.id;
+            } else {
+                // Si el usuario no está autenticado, intenta encontrarlo por su nombre de usuario
+                const { username } = req.body; // Asume que tienes el nombre de usuario en la solicitud
+                const user = await User.findOne({ username });
+
+                if (user) {
+                    userId = user._id;
+                } else {
+                    return res.status(404).json({ error: 'Usuario no encontrado' });
+                }
+            }
+            
             // Verifica si la publicación a la que se está comentando existe
             const publication = await Publication.findById(publicationId);
     
@@ -20,14 +35,14 @@ const commentController ={
                 content,
                 user: userId,
                 publication: publicationId, // Asocia el comentario a la publicación
-                // Otros campos de comentario si es necesario
+                
             });
     
             await newComment.save();
     
             res.json({ msg: 'Comentario creado correctamente', comment: newComment });
         } catch (error) {
-            return res.status(500).json({ msg: 'Error al crear el comentario' });
+            return res.status(500).json({ msg: error.message});
         }
     },
     
@@ -86,6 +101,16 @@ const commentController ={
             res.json(comments.reverse())
         } catch (error) {
             return res.status(500).json({ msg: error.message })
+        }
+    },
+
+    getCommentsByPublicationId: async (req, res) => {
+        try {
+            const { publicationId } = req.params;
+            const comments = await Comments.find({ publication: publicationId });
+            res.json(comments);
+        } catch (error) {
+            return res.status(500).json({ msg: error.message });
         }
     }
 }
