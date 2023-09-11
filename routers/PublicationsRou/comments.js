@@ -13,6 +13,8 @@ router.patch('/update/:id', commentController.updateComment)
 //eliminar comentario
 router.delete('/delete/:id', commentController.deleteComment)
 
+router.get('/',commentController.getComments)
+
 module.exports = router
 
 

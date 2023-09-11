@@ -80,7 +80,14 @@ const commentController ={
             return res.status(500).json({ msg: 'Error al eliminar el comentario' });
         }
     },
-    
+    getComments: async (req, res) => {
+        try {
+            const comments = await Comments.find({})
+            res.json(comments.reverse())
+        } catch (error) {
+            return res.status(500).json({ msg: error.message })
+        }
+    }
 }
 
 module.exports = commentController
