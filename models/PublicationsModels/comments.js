@@ -16,6 +16,6 @@ const commentSchema = new Schema({
         ref: 'Publication', // Hacer referencia al modelo de publicación
         required: true,
     },
-}, { versionKey: false });
+}, { versionKey: false,timestamps:true });
 
 module.exports = mongoose.model('Comments', commentSchema);
