@@ -15,6 +15,9 @@ router.delete('/delete/:id', commentController.deleteComment)
 
 router.get('/',commentController.getComments)
 
+router.get('/publication/:publicationId', commentController.getCommentsByPublicationId);
+
+
 module.exports = router
 
 
