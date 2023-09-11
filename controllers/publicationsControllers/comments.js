@@ -6,22 +6,12 @@ const commentController ={
 
     createComment: async (req, res) => {
         try {
-            const { content, publicationId } = req.body;
-            let userId = null;
+            const { content, publicationId, userId } = req.body;
 
             // Verifica si el usuario está autenticado y obtén su ID
-            if (req.user && req.user.id) {
-                userId = req.user.id;
-            } else {
-                // Si el usuario no está autenticado, intenta encontrarlo por su nombre de usuario
-                const { username } = req.body; // Asume que tienes el nombre de usuario en la solicitud
-                const user = await User.findOne({ username });
-
-                if (user) {
-                    userId = user._id;
-                } else {
-                    return res.status(404).json({ error: 'Usuario no encontrado' });
-                }
+            const user = await User.findById(userId) // buscar el ID del usuario
+            if (!user){
+                return res.status(404).json({error: "could not find user"})
             }
             
             // Verifica si la publicación a la que se está comentando existe
@@ -33,7 +23,7 @@ const commentController ={
     
             const newComment = new Comments({
                 content,
-                user: userId,
+                user: user._id,
                 publication: publicationId, // Asocia el comentario a la publicación
                 
             });
