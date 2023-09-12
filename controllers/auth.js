@@ -59,7 +59,7 @@ const userControllers ={
             expiresIn: 86400
         })
 
-        res.json({token})
+        res.json({token, userFound: {_id: userFound._id, userName }})
     }catch(error){
         console.log(error)
     }
