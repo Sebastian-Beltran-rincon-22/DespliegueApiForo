@@ -8,6 +8,7 @@ const interacControllers = {
     likeInteraction: async (req, res) => {
         try {
             const { id } = req.params;
+            const {userId} = req.body
     
             // Busca la interacción existente o crea una nueva si no existe
             let interaction = await Interactions.findById(id);
@@ -15,8 +16,13 @@ const interacControllers = {
                 interaction = new Interactions({ publication: id });
             }
     
-            const userId = req.user.id; // Obtén el ID del usuario autenticado
+            // Verifica si el usuario está autenticado y obtén su ID
+            const user = await User.findById(userId) // buscar el ID del usuario
+            if (!user){
+                return res.status(404).json({error: "could not find user"})
     
+            } 
+
             // Incrementa el contador de likes de la publicación asociada
             const publication = await Publication.findById(id);
             if (!publication) {
@@ -35,6 +41,7 @@ const interacControllers = {
             await interaction.save();
     
             res.json({ msg: 'Like agregado correctamente' });
+            
         } catch (error) {
             return res.status(500).json({ msg: 'Error al dar like a la interacción' });
         }
@@ -45,13 +52,19 @@ const interacControllers = {
     unlikeInteraction: async (req, res) => {
         try {
             const { id } = req.params;
+            const {userId} = req.body
             const interaction = await Interactions.findById(id);
     
             if (!interaction) {
                 return res.status(404).json({ error: 'Interacción no encontrada' });
             }
     
-            const userId = req.user.id; // Obtén el ID del usuario autenticado
+            // Verifica si el usuario está autenticado y obtén su ID
+            const user = await User.findById(userId) // buscar el ID del usuario
+            if (!user){
+                return res.status(404).json({error: "could not find user"})
+    
+            }  // Obtén el ID del usuario autenticado
     
             // Verifica si el usuario ha dado like a esta interacción
             if (!interaction.reactions.includes(userId)) {
