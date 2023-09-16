@@ -5,7 +5,7 @@ const interacControllers = require('../../controllers/publicationsControllers/in
 const router = express.Router()
 
 // Ruta para dar like a una interacción
-router.post('/like/:id', interacControllers.likeInteraction);
+router.post('/like/:id', [authJwt.verifyToken],interacControllers.likeInteraction);
 
 // Ruta para quitar like de una interacción
 router.delete('/unlike/:id', interacControllers.unlikeInteraction);
