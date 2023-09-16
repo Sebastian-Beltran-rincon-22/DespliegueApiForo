@@ -27,7 +27,7 @@ const controllerPublication = {
                 reactions:[],
                 publication: newPublication._id
             })
-            console.log('Publication created');
+            console.log('Publication created', Interactions);
             res.json({ msg: 'created' });
         } catch (error) {
             return res.status(500).json({ msg: error.message })
