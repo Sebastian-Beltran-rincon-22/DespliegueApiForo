@@ -13,7 +13,6 @@ router.post('/create',[ authJwt.verifyToken,authJwt.isAdmin,verifySignup.checkRo
 
 router.get('/', controllerUser.getUser)
 router.get('/:id', controllerUser.getUserById)
-router.get('/usersByRole',controllerUser.getUsersByRole)
 router.patch('/update/:id', controllerUser.updateUser)
 router.delete('/delete/:id',[ authJwt.verifyToken,authJwt.isAdmin,verifySignup.checkRoleExist
 ], controllerUser.deleteUser) // eliminar usuarios que solo puede realizar admin
