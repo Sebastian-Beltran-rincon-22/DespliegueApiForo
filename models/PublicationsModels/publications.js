@@ -21,11 +21,12 @@ const PublicationSchema = new Schema({
         type: String
     },
 
-    descriptionImg:{
-        type: String,
-        required: true
-    },
-    
+    //agregar para texto alternativo
+    // descriptionImg:{
+    //     type: String,
+    //     required: true
+    // },
+
     likes: [
         {
             
