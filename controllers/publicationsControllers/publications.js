@@ -1,6 +1,8 @@
 const Publication = require('../../models/PublicationsModels/publications');
 const User = require('../../models/user');
-const Interactions = require('../../models/PublicationsModels/interactions')
+const mongoose = require('mongoose')
+const ObjectId = mongoose.Types.ObjectId;
+
 
 
 const controllerPublication = {
@@ -21,14 +23,11 @@ const controllerPublication = {
                 date_create: date_create,
                 description: description,
                 image: image,
+                likes: []
             });
-
-            await Interactions.create({
-                reactions:[],
-                publication: newPublication._id
-            })
-            console.log('Publication created', Interactions);
-            res.json({ msg: 'created' });
+            newPublication.likes = likes.map((userId) => mongoose.Types.ObjectId(userId));
+            await newPublication.save()
+            res.json({ msg: 'publication created', publication: newPublication });
         } catch (error) {
             return res.status(500).json({ msg: error.message })
         }
@@ -77,7 +76,73 @@ const controllerPublication = {
         } catch (error) {
             return res.status(500).json({ msg: error.message })
         }
+    },
+
+     // Dar like a una publicación
+    likePublication: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const { userId } = req.body;
+
+            // Verifica si userId es un ObjectId válido
+            if (!ObjectId.isValid(userId)) {
+                return res.status(400).json({ error: 'userId no es válido' });
+            }
+    
+            console.log(userId)
+
+            const publication = await Publication.findById(id);
+
+            if (!publication) {
+                return res.status(404).json({ error: 'Publicación no encontrada' });
+            }
+
+            
+            if (publication.likes.includes(userId)) {
+                return res.status(400).json({ error: 'El usuario ya ha dado like a esta publicación' });
+            }
+
+            publication.likes.push(userId);
+            await publication.save();
+
+            res.json({ msg: 'Like agregado correctamente', publication});
+        } catch (error) {
+            return res.status(500).json({ msg: 'Error al dar like a la publicación', error: error.message });
+        }
+    },
+
+    // Quitar like a una publicación
+    unlikePublication: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const { userId } = req.body;
+
+            // Verifica si userId es un ObjectId válido
+            if (!ObjectId.isValid(userId)) {
+                return res.status(400).json({ error: 'userId no es válido' });
+            }
+
+            console.log(userId)
+    
+            const publication = await Publication.findById(id);
+
+            if (!publication) {
+                return res.status(404).json({ error: 'Publicación no encontrada' });
+            }
+
+            if (!publication.likes.includes(userId)) {
+                return res.status(400).json({ error: 'El usuario no ha dado like a esta publicación'});
+            }
+
+            publication.likes = publication.likes.filter(user => user.toString() !== userId);
+            await publication.save();
+
+            res.json({ msg: 'Like quitado correctamente', publication});
+        } catch (error) {
+            return res.status(500).json({ msg: 'Error al quitar like a la publicación', error: error.message});
+        }
     }
+
 }
 
 module.exports = controllerPublication
