@@ -20,4 +20,7 @@ router.post('/signin',userControllers.signin) // ruta inicio de sesión
 
 router.get('/',authJwt.verifyToken,userControllers.getsingup) //buscar todos los usuarios
 
+router.get('/usersByRole',userControllers.getUsersByRole)
+
+
 module.exports = router
