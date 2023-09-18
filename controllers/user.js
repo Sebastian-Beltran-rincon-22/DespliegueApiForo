@@ -43,6 +43,19 @@ const controllerUser = {
             return res.status(500).json({ msg: error })
         }
     },
+
+    //get solo usuarios no admins :) 
+    getUsersByRole: async (req, res) => {
+        try {
+            const adminFound = await Admin.findOne({ name: 'user' });
+    
+            const users = await User.find({ roles: adminFound._id });
+    
+            res.json(users.reverse());
+        } catch (error) {
+            return res.status(500).json({ msg: error });
+        }
+    },
     // buscar usuarios especificos
     getUserById: async (req, res) => {
         try {
