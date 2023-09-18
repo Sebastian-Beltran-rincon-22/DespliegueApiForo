@@ -21,4 +21,10 @@ router.patch('/update/:id',authJwt.verifyToken,controllerPublication.updatePubli
 //eliminar publicación
 router.delete('/delete/:id',[authJwt.verifyToken,authJwt.isAdmin],controllerPublication.deletePublication)
 
+// Dar like a una publicación
+router.post('/:id/like', controllerPublication.likePublication);
+
+// Quitar like a una publicación
+router.delete('/:id/unlike', controllerPublication.unlikePublication);
+
 module.exports = router
