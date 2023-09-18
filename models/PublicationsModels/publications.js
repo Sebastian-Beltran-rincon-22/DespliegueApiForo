@@ -20,6 +20,12 @@ const PublicationSchema = new Schema({
     image: {
         type: String
     },
+
+    descriptionImg:{
+        type: String,
+        required: true
+    },
+    
     likes: [
         {
             
