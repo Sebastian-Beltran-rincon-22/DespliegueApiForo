@@ -72,6 +72,22 @@ getsingup: async (req, res) => {
         return res.status(500).json({ msg: error })
     }
 },
+
+    //get solo usuarios no admins :) 
+    getUsersByRole: async (req, res) => {
+        try {
+            const adminFound = await Admin.findOne({ name: 'user' });
+            if (!adminFound) {
+                return res.status(404).json({ msg: 'No se encontró el rol "user".' });
+            }
+    
+            const users = await User.find({ admin: adminFound._id }); // Verifica si 'admin' es el campo correcto
+            res.json(users.reverse());
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ msg: 'Error interno del servidor.' });
+        }
+    },
 }
 
 module.exports = userControllers
