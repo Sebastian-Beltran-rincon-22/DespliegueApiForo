@@ -7,7 +7,7 @@ const router = express.Router()
 
 //rutas 
 //crear publicación
-router.post('/create', authJwt.verifyToken, controllerPublication.create)
+router.post('/create', controllerPublication.create)
 
 //buscarpublicaciones
 router.get('/', controllerPublication.getPublication)
