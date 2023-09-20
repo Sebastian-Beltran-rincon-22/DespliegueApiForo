@@ -8,7 +8,7 @@ const ObjectId = mongoose.Types.ObjectId;
 const controllerPublication = {
     create: async (req, res) => {
         try {
-            const { userId, description, image } = req.body
+            const { userId, description, image, likes} = req.body
             const date_create = new Date();
 
             console.log("UserID:", userId)
