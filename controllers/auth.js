@@ -117,10 +117,6 @@ getsingup: async (req, res) => {
         return res.status(406).json({ message: "Ingresa un correo válido." });
         }
 
-      // verify that the user is an administrator
-        if (!(userFound.admin.name === "admin")) {
-        return res.status(406).json({ message: "Ingresa un correo válido." });
-        }
 
       // token generate for reset password
         const token = jwt.sign({ id: userFound._id }, config.SECRET, {
