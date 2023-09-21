@@ -155,15 +155,15 @@ getsingup: async (req, res) => {
         try {
             const password = await req.body.password;
             const id = await req.userId;
-    
+
             const newPassword = await User.encryptPassword(password);
-    
+
             const setnewuserpass = await User.findByIdAndUpdate(
             { _id: id },
             { password: newPassword }
             );
             setnewuserpass.save();
-    
+
             res.status(201).json({ message: "La contraseña se ha cambiado" });
         } catch (error) {
             res.status(401).json({ status: 401, error });
