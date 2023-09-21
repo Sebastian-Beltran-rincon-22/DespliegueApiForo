@@ -5,6 +5,8 @@ module.exports ={
 
     ADMIN_USERNAME :"SebastianB",
 
-    ADMIN_PASSWORD : "admin123"
+    ADMIN_PASSWORD : "admin123",
+
+    URL: "https://c9-pacto-front.vercel.app/" //URL = http://localhost:3000
 
 }
