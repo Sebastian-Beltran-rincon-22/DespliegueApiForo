@@ -3,6 +3,7 @@ const {Admin} = require('../models/admin')
 const jwt = require('jsonwebtoken')
 const User = require('../models/user')
 const nodemailer = require('nodemailer')
+const bcrypt = require('bcrypt')
 
 // email config
 const transporter = nodemailer.createTransport({
@@ -147,19 +148,25 @@ getsingup: async (req, res) => {
     },
 
     //cambio de contraseña
-    changePassword : async (req, res) => {
+    changePassword: async (req, res) => {
         try {
-            const password = await req.body.password;
-            const id = await req.userId;
-
-            const newPassword = await User.encryptPassword(password);
-
-            const setnewuserpass = await User.findByIdAndUpdate(
-            { _id: id },
-            { password: newPassword }
+            const newPassword = req.body.password; // Obtiene la nueva contraseña desde el cuerpo de la solicitud
+            const id = req.userId;
+            console.log(req.userId)
+            
+            // Genera una nueva sal (valor aleatorio)
+            const saltRounds = 10; // Número de rondas de cifrado
+            const salt = await bcrypt.genSalt(saltRounds);
+    
+            // Cifra la nueva contraseña usando la sal generada
+            const hashedPassword = await bcrypt.hash(newPassword, salt);
+    
+            // Actualiza la contraseña en la base de datos
+            const user = await User.findByIdAndUpdate(
+                { _id: id },
+                { password: hashedPassword }
             );
-            setnewuserpass.save();
-
+    
             res.status(201).json({ message: "La contraseña se ha cambiado" });
         } catch (error) {
             res.status(401).json({ status: 401, error });
