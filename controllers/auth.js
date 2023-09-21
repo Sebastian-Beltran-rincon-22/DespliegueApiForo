@@ -127,12 +127,12 @@ getsingup: async (req, res) => {
         from: config.ADMIN_EMAIL,
         to: email,
         subject: "Enviando correo electrónico para restablecer la contraseña",
-        text: `Este Enlace es válido por 1 horas ${config.URL}/change-password/${token}`,
+        text: `Este Enlace es válido por 1 horas ${config.URL}change-password/${token}`,
         };
         transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
             console.log("error", error);
-            return res.status(406).json({ message: "El correo no fue enviado." });
+            return res.status(406).json({ message: "El correo no fue enviado.", error });
         } else {
             console.log("Email sent", info.response);
             return res.status(200).json({
