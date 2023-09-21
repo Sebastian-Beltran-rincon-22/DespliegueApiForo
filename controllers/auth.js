@@ -2,6 +2,16 @@ const config = require ('../config')
 const {Admin} = require('../models/admin')
 const jwt = require('jsonwebtoken')
 const User = require('../models/user')
+const nodemailer = require('nodemailer')
+
+// email config
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: config.ADMIN_EMAIL,
+        pass: config.ADMIN_PASSWORD,
+    },
+    });
 
 const userControllers ={
     
@@ -88,6 +98,77 @@ getsingup: async (req, res) => {
             return res.status(500).json({ msg: 'Error interno del servidor.' });
         }
     },
+
+
+    // send email Link For reset Password
+    sendPasswordLink : async (req, res) => {
+    const email = await req.body.email;
+
+    if (!email) {
+        return res.status(406).json({ message: "Ingresa un correo válido." });
+    }
+
+    try {
+        const userFound = await User.findOne({ email: req.body.email }).populate(
+        "admin"
+        );
+
+        if (!userFound) {
+        return res.status(406).json({ message: "Ingresa un correo válido." });
+        }
+
+      // verify that the user is an administrator
+        if (!(userFound.admin.name === "admin")) {
+        return res.status(406).json({ message: "Ingresa un correo válido." });
+        }
+
+      // token generate for reset password
+        const token = jwt.sign({ id: userFound._id }, config.SECRET, {
+        expiresIn: 3600, // 1 hour
+        });
+
+        const mailOptions = {
+        from: config.ADMIN_EMAIL,
+        to: email,
+        subject: "Enviando correo electrónico para restablecer la contraseña",
+        text: `Este Enlace es válido por 1 horas ${config.URL}/change-password/${token}`,
+        };
+        transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.log("error", error);
+            return res.status(406).json({ message: "El correo no fue enviado." });
+        } else {
+            console.log("Email sent", info.response);
+            return res.status(200).json({
+            status: 200,
+            message: "El correo fue enviado satisfactoriamente.",
+            });
+        }
+        });
+    } catch (error) {
+        return res.status(401).json({ status: 401, message: "Usuario inválido." });
+    }
+    },
+
+    //cambio de contraseña
+    changePassword : async (req, res) => {
+        try {
+            const password = await req.body.password;
+            const id = await req.userId;
+    
+            const newPassword = await User.encryptPassword(password);
+    
+            const setnewuserpass = await User.findByIdAndUpdate(
+            { _id: id },
+            { password: newPassword }
+            );
+            setnewuserpass.save();
+    
+            res.status(201).json({ message: "La contraseña se ha cambiado" });
+        } catch (error) {
+            res.status(401).json({ status: 401, error });
+        }
+    }
 }
 
 module.exports = userControllers
