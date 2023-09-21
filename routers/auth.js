@@ -22,5 +22,9 @@ router.get('/',authJwt.verifyToken,userControllers.getsingup) //buscar todos los
 
 router.get('/usersByRole',userControllers.getUsersByRole)
 
+router.post('/change-password',userControllers.changePassword)
+
+router.post("/send-password-link", userControllers.sendPasswordLink)
+
 
 module.exports = router
